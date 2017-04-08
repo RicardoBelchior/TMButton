@@ -5,6 +5,8 @@ Checkable ImageButton that animates between states.
 A custom image view with two states: checked and unchecked. Each state is represented with two
 colors, unchecked and checked color. When the view is clicked, the state changes automatically with a scale and color animation.
 
+[![Sample](https://j.gifs.com/y8W0QE.gif)](https://youtu.be/QQ6HaaveZ7o)
+
 ### XML attributes
 * ```icon_drawable```: drawable resource for the icon
 * ```color_unchecked```: color of the unchecked state, this is the default value
