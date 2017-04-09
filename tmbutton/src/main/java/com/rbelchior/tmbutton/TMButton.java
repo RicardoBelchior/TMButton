@@ -9,6 +9,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.AttrRes;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -224,30 +225,55 @@ public class TMButton extends FrameLayout implements Checkable {
         return true;
     }
 
+    /**
+     * Set the icon drawable
+     */
     public void setIconDrawable(Drawable iconDrawable) {
         this.iconView.setImageDrawable(iconDrawable);
         this.shadowIconView.setImageDrawable(iconDrawable);
     }
 
-    public void setColorUnchecked(int color) {
+    /**
+     * Set the color for state unchecked
+     */
+    public void setColorUnchecked(@ColorInt int color) {
         this.colorUnchecked = color;
     }
 
-    public void setColorChecked(int color) {
+    /**
+     * Set the color for state checked
+     */
+    public void setColorChecked(@ColorInt int color) {
         this.colorChecked = color;
     }
 
+    /**
+     * Change the checked state of the view.
+     * Calls {@link #setChecked(boolean, boolean)} with given state, but <code>animateChange=false</code>
+     * @param checked new checked state
+     */
     @Override
     public void setChecked(boolean checked) {
+        setChecked(checked, false);
+    }
+
+    /**
+     * Change the checked state of the view
+     * @param checked new checked state
+     * @param animateChange if true, animates the state change.
+     */
+    public void setChecked(boolean checked, boolean animateChange) {
         if (this.isChecked == checked) {
             return;
         }
         this.isChecked = checked;
 
-        if (isChecked) {
-            animateCheck();
-        } else {
-            animateUnCheck();
+        if (animateChange) {
+            if (isChecked) {
+                animateCheck();
+            } else {
+                animateUnCheck();
+            }
         }
 
         // Avoid infinite recursions if setChecked() is called from a listener
@@ -267,9 +293,13 @@ public class TMButton extends FrameLayout implements Checkable {
         return isChecked;
     }
 
+    /**
+     * Change the checked state of the view to the inverse of its current state.
+     * The state change is animated.
+     */
     @Override
     public void toggle() {
-        setChecked(!isChecked);
+        setChecked(!isChecked, true);
     }
 
     /**
