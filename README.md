@@ -29,7 +29,20 @@ dependencies {
 }
 ```
 
-### XML attributes
+
+### Example usage
+
+```
+    <com.rbelchior.tmbutton.TMButton
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        app:color_checked="#bb0000"
+        app:color_unchecked="#aaaaaa"
+        app:icon_drawable="@drawable/ic_whatshot_black_24dp"
+```
+
+XML attributes:
+
 * ```icon_drawable```: drawable resource for the icon
 * ```color_unchecked```: color of the unchecked state, this is the default value
 * ```color_checked```: color of the checked state
