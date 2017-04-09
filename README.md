@@ -14,7 +14,7 @@ Add to your project dependencies:
 ```
 dependencies {
   // ...
-  compile 'com.github.ricardobelchior:tmbutton:1.0.1'
+  compile 'com.github.ricardobelchior:tmbutton:1.0.2'
 }
 ```
 
