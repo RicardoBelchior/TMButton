@@ -277,6 +277,13 @@ public class TMButton extends FrameLayout implements Checkable {
             } else {
                 animateUnCheck();
             }
+        } else {
+            colorAnimator.cancel();
+            if (isChecked) {
+                iconView.setColorFilter(colorChecked);
+            } else {
+                iconView.setColorFilter(colorUnchecked);
+            }
         }
 
         // Avoid infinite recursions if setChecked() is called from a listener
