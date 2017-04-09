@@ -227,6 +227,7 @@ public class TMButton extends FrameLayout implements Checkable {
 
     /**
      * Set the icon drawable
+     * @param iconDrawable {@link Drawable}
      */
     public void setIconDrawable(Drawable iconDrawable) {
         this.iconView.setImageDrawable(iconDrawable);
@@ -235,6 +236,7 @@ public class TMButton extends FrameLayout implements Checkable {
 
     /**
      * Set the color for state unchecked
+     * @param color packed color int, AARRGGBB
      */
     public void setColorUnchecked(@ColorInt int color) {
         this.colorUnchecked = color;
@@ -242,6 +244,7 @@ public class TMButton extends FrameLayout implements Checkable {
 
     /**
      * Set the color for state checked
+     * @param color packed color int, AARRGGBB
      */
     public void setColorChecked(@ColorInt int color) {
         this.colorChecked = color;
