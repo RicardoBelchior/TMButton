@@ -7,6 +7,28 @@ colors, unchecked and checked color. When the view is clicked, the state changes
 
 [![Sample](https://j.gifs.com/y8W0QE.gif)](https://youtu.be/QQ6HaaveZ7o)
 
+### Import
+
+Add to root-level build.gradle:
+
+```
+allprojects {
+  repositories {
+    // ...
+    maven { url  "http://dl.bintray.com/ricardobelchior/android" }
+  }
+}
+```
+
+Add to your project dependencies:
+
+```
+dependencies {
+  // ...
+  compile 'com.github.ricardobelchior:tmbutton:1.0.0'
+}
+```
+
 ### XML attributes
 * ```icon_drawable```: drawable resource for the icon
 * ```color_unchecked```: color of the unchecked state, this is the default value
