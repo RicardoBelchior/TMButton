@@ -8,10 +8,12 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -125,10 +127,16 @@ public class TMButton extends FrameLayout implements Checkable {
         if (!attributes.hasValue(R.styleable.trinity_mirror_like_button_icon_drawable)) {
             throw new IllegalArgumentException("Missing attribute: icon_drawable");
         }
+        Drawable drawable;
 
-        setIconDrawable(
-                attributes.getDrawable(
-                        R.styleable.trinity_mirror_like_button_icon_drawable));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawable = attributes.getDrawable(R.styleable.trinity_mirror_like_button_icon_drawable);
+        } else {
+            int iconResId = attributes.getResourceId(R.styleable.trinity_mirror_like_button_icon_drawable, 0);
+            drawable = AppCompatResources.getDrawable(getContext(), iconResId);
+        }
+
+        setIconDrawable(drawable);
     }
 
     @Override
