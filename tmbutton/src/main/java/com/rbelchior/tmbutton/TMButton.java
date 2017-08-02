@@ -19,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Checkable;
 import android.widget.FrameLayout;
@@ -49,6 +50,7 @@ public class TMButton extends FrameLayout implements Checkable {
     private ImageView iconView;
     private ImageView shadowIconView;
 
+    private ViewPropertyAnimator shadowAnimator;
     private ObjectAnimator colorAnimator;
 
     private boolean isChecked;
@@ -78,9 +80,10 @@ public class TMButton extends FrameLayout implements Checkable {
 
         isChecked = false;
 
-        iconView.setColorFilter(colorUnchecked);
+        setIconViewUnchecked();
         shadowIconView.setVisibility(View.GONE);
 
+        shadowAnimator = shadowIconView.animate();
         colorAnimator = ObjectAnimator
                 .ofObject(iconView, "colorFilter", new ArgbEvaluator(), 0, 0)
                 .setDuration(DURATION_COLOR);
@@ -154,10 +157,10 @@ public class TMButton extends FrameLayout implements Checkable {
     }
 
     private void animateCheck() {
-        shadowIconView.animate().cancel();
         shadowIconView.setVisibility(View.VISIBLE);
 
-        shadowIconView.animate()
+        shadowAnimator.cancel();
+        shadowAnimator
                 .scaleX(SCALE_FACTOR)
                 .scaleY(SCALE_FACTOR)
                 .alpha(0.0f)
@@ -166,18 +169,23 @@ public class TMButton extends FrameLayout implements Checkable {
                 .setInterpolator(INTERPOLATOR_DECELERATE);
 
         colorAnimator.cancel();
+        colorAnimator.removeAllListeners();
+        colorAnimator.addListener(colorAnimatorCheckListener);
         colorAnimator.setObjectValues(colorUnchecked, colorChecked);
         colorAnimator.start();
     }
 
     private void animateUnCheck() {
+        shadowAnimator.cancel();
         colorAnimator.cancel();
+        colorAnimator.removeAllListeners();
+        colorAnimator.addListener(colorAnimatorUncheckListener);
         colorAnimator.setObjectValues(colorChecked, colorUnchecked);
         colorAnimator.start();
     }
 
 
-    private AnimatorListenerAdapter shadowAnimatorListener = new AnimatorListenerAdapter() {
+    private final AnimatorListenerAdapter shadowAnimatorListener = new AnimatorListenerAdapter() {
 
         @Override
         public void onAnimationCancel(Animator animation) {
@@ -197,6 +205,30 @@ public class TMButton extends FrameLayout implements Checkable {
         shadowIconView.setAlpha(1.0f);
         shadowIconView.setColorFilter(colorChecked);
     }
+
+    private final Animator.AnimatorListener colorAnimatorCheckListener = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            setIconViewChecked();
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            setIconViewChecked();
+        }
+    };
+
+    private final Animator.AnimatorListener colorAnimatorUncheckListener = new AnimatorListenerAdapter() {
+        @Override
+        public void onAnimationCancel(Animator animation) {
+            setIconViewUnchecked();
+        }
+
+        @Override
+        public void onAnimationEnd(Animator animation) {
+            setIconViewUnchecked();
+        }
+    };
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -288,9 +320,9 @@ public class TMButton extends FrameLayout implements Checkable {
         } else {
             colorAnimator.cancel();
             if (isChecked) {
-                iconView.setColorFilter(colorChecked);
+                setIconViewChecked();
             } else {
-                iconView.setColorFilter(colorUnchecked);
+                setIconViewUnchecked();
             }
         }
 
@@ -304,6 +336,14 @@ public class TMButton extends FrameLayout implements Checkable {
             onCheckedChangeListener.onCheckedChanged(this, isChecked);
         }
         broadcasting = false;
+    }
+
+    private void setIconViewChecked() {
+        iconView.setColorFilter(colorChecked);
+    }
+
+    private void setIconViewUnchecked() {
+        iconView.setColorFilter(colorUnchecked);
     }
 
     @Override
