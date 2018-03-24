@@ -31,9 +31,9 @@ pipeline {
     }
     stage('UI Test') {
       steps {
-        sh 'start_emulator.sh'
+        sh 'sh start_emulator.sh'
         sh './gradlew connectedAndroidTest'
-        sh 'stop_emulator.sh'
+        sh 'sh stop_emulator.sh'
       }
     }
   }
