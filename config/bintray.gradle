@@ -32,7 +32,12 @@ artifacts {
 
 // Bintray
 Properties properties = new Properties()
-properties.load(project.rootProject.file('local.properties').newDataInputStream())
+String propertiesPath = 'local.properties'
+try {
+    properties.load(project.rootProject.file(propertiesPath).newDataInputStream())
+} catch(Exception ignored) {
+    println("Could not find property file: $propertiesPath")
+}
 
 bintray {
     user = properties.getProperty("bintray.user")
