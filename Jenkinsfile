@@ -21,6 +21,7 @@ pipeline {
     stage('Static analysis') {
       steps {
         sh './gradlew lintDebug'
+        androidLint(pattern: '**/lint-results-*.xml')
       }
     }
   }
