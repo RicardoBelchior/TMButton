@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'runmymind/docker-android-sdk:ubuntu-standalone'
+      image 'circleci/android:api-25-node8-alpha'
     }
     
   }
