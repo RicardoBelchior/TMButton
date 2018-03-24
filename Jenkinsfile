@@ -29,12 +29,5 @@ pipeline {
         androidLint(pattern: '**/lint-results-*.xml')
       }
     }
-    stage('UI Test') {
-      steps {
-        sh 'sh start_emulator.sh'
-        sh './gradlew connectedAndroidTest'
-        sh 'sh stop_emulator.sh'
-      }
-    }
   }
 }
