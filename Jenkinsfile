@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'runmymind/docker-android-sdk: ubuntu-standalone'
+      image 'runmymind/docker-android-sdk:ubuntu-standalone'
     }
     
   }
