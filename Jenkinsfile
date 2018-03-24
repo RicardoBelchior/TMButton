@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'runmymind/docker-android-sdk: ubuntu-standalone'
+    }
+    
+  }
   stages {
     stage('Compile') {
       steps {
