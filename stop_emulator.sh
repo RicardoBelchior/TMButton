@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PORT=6000
+PORT=5566
 SERIAL=emulator-${PORT}
 
 #Stop the Android Emulator

@@ -2,9 +2,19 @@
 
 AVD_NAME="integration-tests"
 AVD_DEVICE_ID="Nexus 5X"
+SDK_ID="system-images;android-26;google_apis;x86_64"
 PORT=5566
 
 ##############################################################################
+
+# Install SDK license so Android Gradle plugin can install deps.
+echo "Installing/Updating sdks"
+mkdir "$ANDROID_HOME/licenses" || true
+echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
+# Install the rest of tools (e.g., avdmanager).
+$ANDROID_HOME/tools/bin/sdkmanager tools
+$ANDROID_HOME/tools/bin/sdkmanager --update
+$ANDROID_HOME/tools/bin/sdkmanager "$SDK_ID"
 
 #Calculate the Serial Number of the emulator instance
 SERIAL=emulator-${PORT}
@@ -15,7 +25,7 @@ echo "Creating (forceful) AVD with name ${AVD_NAME}"
 echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd \
     -f \
     -n "${AVD_NAME}" \
-    -k 'system-images;android-25;google_apis;x86_64' \
+    -k "${SDK_ID}" \
     -d "${AVD_DEVICE_ID}"
 echo "AVD ${AVD_NAME} created."
 
@@ -42,7 +52,7 @@ done
 duration=$(( SECONDS - start ))
 echo "Android Emulator started after $duration seconds."
 
-sleep 6 # PackageManager needs some time to init
+sleep 10 # PackageManager needs some time to init
 adb shell settings put global window_animation_scale 0
 adb shell settings put global transition_animation_scale 0
 adb shell settings put global animator_duration_scale 0
