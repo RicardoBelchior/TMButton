@@ -1,5 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'runmymind/docker-android-sdk:ubuntu-standalone'
+    }
+    
+  }
   stages {
     stage('Compile') {
       steps {
@@ -21,6 +26,7 @@ pipeline {
     stage('Static analysis') {
       steps {
         sh './gradlew lintDebug'
+        androidLint(pattern: '**/lint-results-*.xml')
       }
     }
   }
