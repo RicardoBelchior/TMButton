@@ -14,7 +14,7 @@ Add to your project dependencies:
 ```
 dependencies {
   // ...
-  implementation 'com.github.ricardobelchior:tmbutton:${LATEST}'
+  implementation 'com.github.ricardobelchior:tmbutton:1.0.5'
 }
 ```
 
