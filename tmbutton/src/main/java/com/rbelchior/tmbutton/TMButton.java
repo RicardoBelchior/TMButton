@@ -26,13 +26,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 /**
+ * <p>
  * A custom image view with two states: checked and unchecked. Each state is represented with two
  * colors, unchecked and checked color.
  * When the view is clicked, the state changes automatically with a scale and color animation.
- * <br/>
+ * </p>
  * <p><strong>Note:</strong> Make sure to call <code>android:clipChildren="false"</code> on the parent
  * layout, otherwise the scaling animation will not occur.</p>
- * <br/>
  * <p><strong>XML attributes:</strong></p>
  * <p><code>icon_drawable</code>: icon drawable</p>
  * <p><code>color_unchecked</code>: color of the unchecked state, this is the default value</p>
