@@ -29,12 +29,12 @@ import android.widget.ImageView;
  * A custom image view with two states: checked and unchecked. Each state is represented with two
  * colors, unchecked and checked color.
  * When the view is clicked, the state changes automatically with a scale and color animation.
- *
+ * <p>
  * <p><strong>Note:</strong> Make sure to call <code>android:clipChildren="false"</code> on the parent
  * layout, otherwise the scaling animation will not occur.</p>
- *
+ * <p>
  * <p><strong>XML attributes</strong></p>
- *
+ * <p>
  * <p><code>icon_drawable</code>: icon drawable</p>
  * <p><code>color_unchecked</code>: color of the unchecked state, this is the default value</p>
  * <p><code>color_checked</code>: color of the checked state</p>
@@ -77,6 +77,7 @@ public class TMButton extends FrameLayout implements Checkable {
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         initViews(context, attrs, defStyleAttr);
         initAttrs(context, attrs);
+        setClickable(true);
 
         isChecked = false;
 
@@ -232,6 +233,8 @@ public class TMButton extends FrameLayout implements Checkable {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        boolean result = super.onTouchEvent(event);
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 iconView.animate()
@@ -239,16 +242,6 @@ public class TMButton extends FrameLayout implements Checkable {
                         .scaleY(0.7f)
                         .setDuration(150)
                         .setInterpolator(INTERPOLATOR_DECELERATE);
-                setPressed(true);
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-                float x = event.getX();
-                float y = event.getY();
-                boolean isInside = (x > 0 && x < getWidth() && y > 0 && y < getHeight());
-                if (isPressed() != isInside) {
-                    setPressed(isInside);
-                }
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -256,17 +249,21 @@ public class TMButton extends FrameLayout implements Checkable {
                         .scaleX(1)
                         .scaleY(1)
                         .setInterpolator(INTERPOLATOR_DECELERATE);
-                if (isPressed()) {
-                    performClick();
-                    setPressed(false);
-                }
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+                iconView.animate()
+                        .scaleX(1)
+                        .scaleY(1)
+                        .setInterpolator(INTERPOLATOR_DECELERATE);
                 break;
         }
-        return true;
+        return result;
     }
 
     /**
      * Set the icon drawable
+     *
      * @param iconDrawable {@link Drawable}
      */
     public void setIconDrawable(Drawable iconDrawable) {
@@ -276,6 +273,7 @@ public class TMButton extends FrameLayout implements Checkable {
 
     /**
      * Set the color for state unchecked
+     *
      * @param color packed color int, AARRGGBB
      */
     public void setColorUnchecked(@ColorInt int color) {
@@ -284,6 +282,7 @@ public class TMButton extends FrameLayout implements Checkable {
 
     /**
      * Set the color for state checked
+     *
      * @param color packed color int, AARRGGBB
      */
     public void setColorChecked(@ColorInt int color) {
@@ -293,6 +292,7 @@ public class TMButton extends FrameLayout implements Checkable {
     /**
      * Change the checked state of the view.
      * Calls {@link #setChecked(boolean, boolean)} with given state, but <code>animateChange=false</code>
+     *
      * @param checked new checked state
      */
     @Override
@@ -302,7 +302,8 @@ public class TMButton extends FrameLayout implements Checkable {
 
     /**
      * Change the checked state of the view
-     * @param checked new checked state
+     *
+     * @param checked       new checked state
      * @param animateChange if true, animates the state change.
      */
     public void setChecked(boolean checked, boolean animateChange) {
