@@ -15,7 +15,7 @@ public class SampleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample);
 
-        TMButton tmButton = findViewById(R.id.TMButton);
+        TMButton tmButton = findViewById(R.id.button_2);
         tmButton.setChecked(true);
 
         if (SHOW_LIST) {

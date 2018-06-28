@@ -58,6 +58,15 @@ public class TMButton extends FrameLayout implements Checkable {
     private int colorUnchecked;
     private int colorChecked;
 
+    private Drawable checkedDrawable;
+
+    /**
+     * Optional drawable to be specifically used when unchecked.
+     * Note the animations are not as smooth in this case. To be improved.
+     */
+    @Nullable
+    private Drawable uncheckedDrawable;
+
     private OnCheckedChangeListener onCheckedChangeListener;
 
     public TMButton(@NonNull Context context) {
@@ -107,7 +116,8 @@ public class TMButton extends FrameLayout implements Checkable {
 
         initColorDefault(attributes);
         initColorChecked(attributes);
-        initIconDrawable(attributes);
+        initCheckedDrawable(attributes);
+        initUncheckedDrawable(attributes);
 
         attributes.recycle();
     }
@@ -126,7 +136,7 @@ public class TMButton extends FrameLayout implements Checkable {
                         Color.MAGENTA));
     }
 
-    private void initIconDrawable(TypedArray attributes) {
+    private void initCheckedDrawable(TypedArray attributes) {
         if (!attributes.hasValue(R.styleable.trinity_mirror_like_button_icon_drawable)) {
             throw new IllegalArgumentException("Missing attribute: icon_drawable");
         }
@@ -140,6 +150,24 @@ public class TMButton extends FrameLayout implements Checkable {
         }
 
         setIconDrawable(drawable);
+    }
+
+    private void initUncheckedDrawable(TypedArray attributes) {
+        if (!attributes.hasValue(R.styleable.trinity_mirror_like_button_unchecked_drawable)) {
+            // this attr is optional
+            return;
+        }
+
+        Drawable drawable;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawable = attributes.getDrawable(R.styleable.trinity_mirror_like_button_unchecked_drawable);
+        } else {
+            int iconResId = attributes.getResourceId(R.styleable.trinity_mirror_like_button_unchecked_drawable, 0);
+            drawable = AppCompatResources.getDrawable(getContext(), iconResId);
+        }
+
+        setUncheckedDrawable(drawable);
     }
 
     @Override
@@ -157,6 +185,10 @@ public class TMButton extends FrameLayout implements Checkable {
     }
 
     private void animateCheck() {
+        if (uncheckedDrawable != null) {
+            iconView.setImageDrawable(checkedDrawable);
+        }
+
         shadowIconView.setVisibility(View.VISIBLE);
 
         shadowAnimator.cancel();
@@ -176,6 +208,10 @@ public class TMButton extends FrameLayout implements Checkable {
     }
 
     private void animateUnCheck() {
+        if (uncheckedDrawable != null) {
+            iconView.setImageDrawable(uncheckedDrawable);
+        }
+
         shadowAnimator.cancel();
         colorAnimator.cancel();
         colorAnimator.removeAllListeners();
@@ -266,8 +302,18 @@ public class TMButton extends FrameLayout implements Checkable {
      * @param iconDrawable {@link Drawable}
      */
     public void setIconDrawable(Drawable iconDrawable) {
+        this.checkedDrawable = iconDrawable;
         this.iconView.setImageDrawable(iconDrawable);
         this.shadowIconView.setImageDrawable(iconDrawable);
+    }
+
+    /**
+     * Set the unchecked icon drawable.
+     *
+     * @param uncheckedDrawable {@link Drawable}
+     */
+    public void setUncheckedDrawable(Drawable uncheckedDrawable) {
+        this.uncheckedDrawable = uncheckedDrawable;
     }
 
     /**

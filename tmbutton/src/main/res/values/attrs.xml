@@ -2,6 +2,7 @@
 
     <declare-styleable name="trinity_mirror_like_button">
         <attr name="icon_drawable" format="reference"/>
+        <attr name="unchecked_drawable" format="reference"/>
         <attr name="color_unchecked" format="color"/>
         <attr name="color_checked" format="color"/>
     </declare-styleable>
