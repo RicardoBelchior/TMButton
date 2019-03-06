@@ -185,7 +185,7 @@ public class TMButton extends FrameLayout implements Checkable {
     }
 
     private void animateCheck() {
-        if (uncheckedDrawable != null) {
+        if (isUncheckedDrawableAvailable()) {
             iconView.setImageDrawable(checkedDrawable);
         }
 
@@ -208,7 +208,7 @@ public class TMButton extends FrameLayout implements Checkable {
     }
 
     private void animateUnCheck() {
-        if (uncheckedDrawable != null) {
+        if (isUncheckedDrawableAvailable()) {
             iconView.setImageDrawable(uncheckedDrawable);
         }
 
@@ -312,12 +312,13 @@ public class TMButton extends FrameLayout implements Checkable {
      *
      * @param uncheckedDrawable {@link Drawable}
      */
-    public void setUncheckedDrawable(Drawable uncheckedDrawable) {
+    public void setUncheckedDrawable(@Nullable Drawable uncheckedDrawable) {
         this.uncheckedDrawable = uncheckedDrawable;
     }
 
     /**
      * Set the color for state unchecked
+     * (Does not update immediately, call setChecked with forceUpdate=true, to force an update)
      *
      * @param color packed color int, AARRGGBB
      */
@@ -326,7 +327,8 @@ public class TMButton extends FrameLayout implements Checkable {
     }
 
     /**
-     * Set the color for state checked
+     * Set the color for state checked.
+     * (Does not update immediately, call setChecked with forceUpdate=true, to force an update)
      *
      * @param color packed color int, AARRGGBB
      */
@@ -352,7 +354,19 @@ public class TMButton extends FrameLayout implements Checkable {
      * @param animateChange if true, animates the state change.
      */
     public void setChecked(boolean checked, boolean animateChange) {
-        if (this.isChecked == checked) {
+        setChecked(checked, animateChange, false);
+    }
+
+    /**
+     * Change the checked state of the view
+     *
+     * @param checked       new checked state
+     * @param animateChange if true, animates the state change
+     * @param forceUpdate if true, forces an update of the drawable, otherwise skip changes when
+     *                    already (un)checked.
+     */
+    public void setChecked(boolean checked, boolean animateChange, boolean forceUpdate) {
+        if (!forceUpdate && this.isChecked == checked) {
             return;
         }
         this.isChecked = checked;
@@ -386,10 +400,26 @@ public class TMButton extends FrameLayout implements Checkable {
 
     private void setIconViewChecked() {
         iconView.setColorFilter(colorChecked);
+
+        if (isUncheckedDrawableAvailable()) {
+            iconView.setImageDrawable(checkedDrawable);
+        }
     }
 
     private void setIconViewUnchecked() {
         iconView.setColorFilter(colorUnchecked);
+
+        if (isUncheckedDrawableAvailable()) {
+            iconView.setImageDrawable(uncheckedDrawable);
+        }
+    }
+
+    /**
+     * Return true if the optional {@link #uncheckedDrawable} was provided, either by XML
+     * attribute {@link R.attr#unchecked_drawable} or setter {@link #setUncheckedDrawable(Drawable)}.
+     */
+    private boolean isUncheckedDrawableAvailable() {
+        return uncheckedDrawable != null;
     }
 
     @Override

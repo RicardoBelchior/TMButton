@@ -8,7 +8,7 @@
     tools:context="com.rbelchior.tmbutton.sample.SampleActivity">
 
     <com.rbelchior.tmbutton.TMButton
-        android:id="@+id/button_1"
+        android:id="@+id/button_2"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginBottom="8dp"
@@ -18,13 +18,13 @@
         app:color_checked="#bb0000"
         app:color_unchecked="#aaa"
         app:icon_drawable="@drawable/ic_whatshot_black_24dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_2"
+        app:layout_constraintBottom_toTopOf="@+id/button_3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_3" />
+        app:layout_constraintTop_toBottomOf="@+id/button_1" />
 
     <com.rbelchior.tmbutton.TMButton
-        android:id="@+id/button_2"
+        android:id="@+id/button_3"
         android:layout_width="64dp"
         android:layout_height="64dp"
         app:color_checked="#009900"
@@ -37,7 +37,7 @@
         app:layout_constraintVertical_bias="0.498" />
 
     <com.rbelchior.tmbutton.TMButton
-        android:id="@+id/button_3"
+        android:id="@+id/button_1"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_marginEnd="8dp"
@@ -64,7 +64,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_2" />
+        app:layout_constraintTop_toBottomOf="@+id/button_3" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

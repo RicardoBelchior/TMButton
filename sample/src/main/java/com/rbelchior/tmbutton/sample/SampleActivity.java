@@ -1,5 +1,6 @@
 package com.rbelchior.tmbutton.sample;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ListView;
@@ -15,8 +16,13 @@ public class SampleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample);
 
-        TMButton tmButton = findViewById(R.id.button_2);
-        tmButton.setChecked(true);
+        TMButton tmButton1 = findViewById(R.id.button_1);
+        tmButton1.setColorChecked(Color.MAGENTA);
+        tmButton1.setColorUnchecked(Color.MAGENTA);
+        tmButton1.setChecked(false, false, true);
+
+        TMButton tmButton3 = findViewById(R.id.button_3);
+        tmButton3.setChecked(true);
 
         if (SHOW_LIST) {
             ListView listView = findViewById(R.id.list_view);
