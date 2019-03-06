@@ -51,7 +51,7 @@ configurations {
 
 dependencies {
     implementation "androidx.appcompat:appcompat:1.0.2"
-    javadocDeps "androidx.annotation:annotation:1.0.1"
+    javadocDeps "androidx.annotation:annotation:1.0.2"
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
