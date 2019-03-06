@@ -10,8 +10,15 @@ if (project.hasProperty("android")) { // Android libraries
 
     task javadoc(type: Javadoc) {
         source = android.sourceSets.main.java.srcDirs
+        exclude '**/R.html', '**/R.*.html', '**/index.html'
         classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
         classpath += configurations.javadocDeps
+
+        android.libraryVariants.all { variant ->
+            if (variant.name == 'release') {
+                owner.classpath += variant.javaCompile.classpath
+            }
+        }
     }
 } else { // Java libraries
     task sourcesJar(type: Jar, dependsOn: classes) {
@@ -41,7 +48,10 @@ try {
 
 bintray {
     user = properties.getProperty("bintray.user")
+    validateProp(user, "bintray.user")
+
     key = properties.getProperty("bintray.apikey")
+    validateProp(key, "bintray.key")
 
     configurations = ['archives']
     pkg {
@@ -58,8 +68,15 @@ bintray {
             gpg {
                 sign = true //Determines whether to GPG sign the files. The default is false
                 passphrase = properties.getProperty("bintray.gpg.password")
+                validateProp(passphrase, "bintray.gpg.password")
                 //Optional. The passphrase for GPG signing'
             }
         }
+    }
+}
+
+private void validateProp(String propertyValue, String propertyName) {
+    if (propertyValue == null || propertyValue.isEmpty()) {
+        throw new IllegalArgumentException("Misssing " + propertyName + " at local.properties")
     }
 }
