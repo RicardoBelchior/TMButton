@@ -92,6 +92,7 @@ public class TMButton extends LinearLayout implements Checkable {
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         setOrientation(LinearLayout.HORIZONTAL);
         setLayoutParams(new LinearLayout.LayoutParams(context, attrs));
+        setClipChildren(false);
         setGravity(Gravity.CENTER_VERTICAL);
         initViews(context, attrs, defStyleAttr);
         initAttrs(context, attrs);
@@ -123,6 +124,7 @@ public class TMButton extends LinearLayout implements Checkable {
         addView(textView);
 
         final FrameLayout iconLayout = new FrameLayout(context, attrs, defStyleAttr);
+        iconLayout.setClipChildren(false);
         iconLayout.addView(iconView);
         iconLayout.addView(shadowIconView);
         addView(iconLayout);
