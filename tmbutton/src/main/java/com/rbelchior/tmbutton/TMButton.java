@@ -147,15 +147,15 @@ public class TMButton extends LinearLayout implements Checkable {
     }
 
     private void initTextViewAttrs(Context context, TypedArray attributes) {
-        String text = attributes.getString(R.styleable.TMButton_text);
+        String text = attributes.getString(R.styleable.TMButton_tmbutton_text);
         if (text == null || text.isEmpty()) {
             textView.setVisibility(View.GONE);
         } else {
             textView.setVisibility(View.VISIBLE);
             textView.setText(text);
-            textView.setTextAppearance(context, attributes.getResourceId(R.styleable.TMButton_text_appearance, -1));
+            textView.setTextAppearance(context, attributes.getResourceId(R.styleable.TMButton_tmbutton_text_appearance, -1));
             final LinearLayout.LayoutParams params = (LayoutParams) textView.getLayoutParams();
-            params.setMarginEnd(attributes.getDimensionPixelSize(R.styleable.TMButton_drawable_padding, 0));
+            params.setMarginEnd(attributes.getDimensionPixelSize(R.styleable.TMButton_tmbutton_drawable_padding, 0));
             textView.setLayoutParams(params);
         }
     }

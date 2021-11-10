@@ -5,9 +5,9 @@
         <attr name="unchecked_drawable" format="reference"/>
         <attr name="color_unchecked" format="color"/>
         <attr name="color_checked" format="color"/>
-        <attr name="text" format="reference"/>
-        <attr name="drawable_padding" format="dimension"/>
-        <attr name="text_appearance" format="reference"/>
+        <attr name="tmbutton_text" format="reference"/>
+        <attr name="tmbutton_drawable_padding" format="dimension"/>
+        <attr name="tmbutton_text_appearance" format="reference"/>
     </declare-styleable>
 
 </resources>
