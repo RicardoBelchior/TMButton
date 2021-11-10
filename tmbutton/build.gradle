@@ -1,38 +1,10 @@
 apply plugin: 'com.android.library'
 
-ext {
-    bintrayRepo = 'android'
-    bintrayName = 'tm-button'
-
-    publishedGroupId = 'com.github.ricardobelchior'
-    artifact = 'tmbutton'
-    libraryName = 'TMButton'
-
-    libraryDescription = 'Checkable ImageButton that animates between states'
-
-    siteUrl = 'https://github.com/RicardoBelchior/TMButton'
-    gitUrl = 'https://github.com/RicardoBelchior/TMButton.git'
-
-    libraryVersion = '1.2.0'
-
-    developerId = 'ricardobelchior'
-    developerName = 'Ricardo Belchior'
-    developerEmail = 'ricardolagido@gmail.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
-}
-
-
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -43,6 +15,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 
 configurations {
@@ -50,13 +26,13 @@ configurations {
 }
 
 dependencies {
-    implementation "androidx.appcompat:appcompat:1.0.2"
-    javadocDeps "androidx.annotation:annotation:1.0.2"
+    implementation "androidx.appcompat:appcompat:1.3.1"
+    javadocDeps "androidx.annotation:annotation:1.3.0"
+
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
 }
 
-apply from: '../config/maven.gradle'
-apply from: '../config/bintray.gradle'
+apply from: '../config/publish.gradle'
