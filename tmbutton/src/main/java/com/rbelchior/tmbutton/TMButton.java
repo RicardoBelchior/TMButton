@@ -239,6 +239,7 @@ public class TMButton extends LinearLayout implements Checkable {
         colorAnimator.removeAllListeners();
         colorAnimator.addListener(colorAnimatorCheckListener);
         colorAnimator.setObjectValues(colorUnchecked, colorChecked);
+        setTextViewChecked();
         colorAnimator.start();
     }
 
@@ -252,6 +253,7 @@ public class TMButton extends LinearLayout implements Checkable {
         colorAnimator.removeAllListeners();
         colorAnimator.addListener(colorAnimatorUncheckListener);
         colorAnimator.setObjectValues(colorChecked, colorUnchecked);
+        setTextViewUnchecked();
         colorAnimator.start();
     }
 
@@ -295,13 +297,12 @@ public class TMButton extends LinearLayout implements Checkable {
         @Override
         public void onAnimationCancel(Animator animation) {
             setIconViewUnchecked();
-            setTextViewUnchecked();
+
         }
 
         @Override
         public void onAnimationEnd(Animator animation) {
             setIconViewUnchecked();
-            setTextViewUnchecked();
         }
     };
 
