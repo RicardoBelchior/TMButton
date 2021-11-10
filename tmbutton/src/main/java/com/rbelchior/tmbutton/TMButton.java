@@ -114,12 +114,9 @@ public class TMButton extends LinearLayout implements Checkable {
     private void initViews(Context context, AttributeSet attrs, int defStyleAttr) {
 
         iconView = new ImageView(context, attrs, defStyleAttr);
-        iconView.setId(R.id.button_icon);
-
         shadowIconView = new ImageView(context, attrs, defStyleAttr);
 
         textView = new TextView(context, attrs, defStyleAttr);
-        textView.setId(R.id.button_text);
 
         addView(textView);
 
