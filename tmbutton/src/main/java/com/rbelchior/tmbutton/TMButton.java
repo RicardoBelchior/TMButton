@@ -9,6 +9,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
@@ -19,6 +20,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Checkable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.AttrRes;
 import androidx.annotation.ColorInt;
@@ -39,7 +42,7 @@ import androidx.appcompat.content.res.AppCompatResources;
  * <p><code>color_unchecked</code>: color of the unchecked state, this is the default value</p>
  * <p><code>color_checked</code>: color of the checked state</p>
  */
-public class TMButton extends FrameLayout implements Checkable {
+public class TMButton extends RelativeLayout implements Checkable {
 
     private static final DecelerateInterpolator INTERPOLATOR_DECELERATE = new DecelerateInterpolator(2.0f);
     private static final float SCALE_FACTOR = 2.5f;
@@ -49,6 +52,7 @@ public class TMButton extends FrameLayout implements Checkable {
 
     private ImageView iconView;
     private ImageView shadowIconView;
+    private TextView textView;
 
     private ViewPropertyAnimator shadowAnimator;
     private ObjectAnimator colorAnimator;
@@ -86,11 +90,13 @@ public class TMButton extends FrameLayout implements Checkable {
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         initViews(context, attrs, defStyleAttr);
         initAttrs(context, attrs);
+
         setClickable(true);
 
         isChecked = false;
 
         setIconViewUnchecked();
+        setTextViewUnchecked();
         shadowIconView.setVisibility(View.GONE);
 
         shadowAnimator = shadowIconView.animate();
@@ -100,11 +106,48 @@ public class TMButton extends FrameLayout implements Checkable {
     }
 
     private void initViews(Context context, AttributeSet attrs, int defStyleAttr) {
+        TypedArray attributes =
+                context.obtainStyledAttributes(attrs, R.styleable.trinity_mirror_like_button);
+
         iconView = new ImageView(context, attrs, defStyleAttr);
+        iconView.setId(R.id.button_icon);
         shadowIconView = new ImageView(context, attrs, defStyleAttr);
 
-        addView(iconView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        addView(shadowIconView, new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        textView = new TextView(context, attrs, defStyleAttr);
+        textView.setId(R.id.button_text);
+        final String buttonText = attributes.getString(R.styleable.trinity_mirror_like_button_button_text);
+        textView.setText(buttonText);
+        textView.setTextAppearance(context, attributes.getResourceId(R.styleable.trinity_mirror_like_button_text_style, -1));
+
+        RelativeLayout.LayoutParams parentParam = new LayoutParams(context, attrs);
+        setLayoutParams(parentParam);
+
+        RelativeLayout.LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        layoutParams.resolveLayoutDirection(layoutParams.getLayoutDirection());
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        addView(textView, layoutParams);
+
+        if(TextUtils.isEmpty(buttonText)){
+            layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        }else{
+            layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        }
+
+        layoutParams.resolveLayoutDirection(layoutParams.getLayoutDirection());
+        layoutParams.addRule(RelativeLayout.RIGHT_OF, textView.getId());
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        layoutParams.setMarginStart(attributes.getDimensionPixelSize(R.styleable.trinity_mirror_like_button_text_icon_space, 0));
+        addView(iconView, layoutParams);
+
+        layoutParams.resolveLayoutDirection(layoutParams.getLayoutDirection());
+        layoutParams.addRule(RelativeLayout.ALIGN_START, iconView.getId());
+        layoutParams.addRule(RelativeLayout.ALIGN_END, iconView.getId());
+        layoutParams.addRule(RelativeLayout.ALIGN_TOP, iconView.getId());
+        layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, iconView.getId());
+        addView(shadowIconView, layoutParams);
+
+        attributes.recycle();
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
@@ -247,11 +290,13 @@ public class TMButton extends FrameLayout implements Checkable {
         @Override
         public void onAnimationCancel(Animator animation) {
             setIconViewChecked();
+            setTextViewChecked();
         }
 
         @Override
         public void onAnimationEnd(Animator animation) {
             setIconViewChecked();
+            setTextViewChecked();
         }
     };
 
@@ -259,11 +304,13 @@ public class TMButton extends FrameLayout implements Checkable {
         @Override
         public void onAnimationCancel(Animator animation) {
             setIconViewUnchecked();
+            setTextViewUnchecked();
         }
 
         @Override
         public void onAnimationEnd(Animator animation) {
             setIconViewUnchecked();
+            setTextViewUnchecked();
         }
     };
 
@@ -363,8 +410,8 @@ public class TMButton extends FrameLayout implements Checkable {
      *
      * @param checked       new checked state
      * @param animateChange if true, animates the state change
-     * @param forceUpdate if true, forces an update of the drawable, otherwise skip changes when
-     *                    already (un)checked.
+     * @param forceUpdate   if true, forces an update of the drawable, otherwise skip changes when
+     *                      already (un)checked.
      */
     public void setChecked(boolean checked, boolean animateChange, boolean forceUpdate) {
         if (!forceUpdate && this.isChecked == checked) {
@@ -382,8 +429,10 @@ public class TMButton extends FrameLayout implements Checkable {
             colorAnimator.cancel();
             if (isChecked) {
                 setIconViewChecked();
+                setTextViewChecked();
             } else {
                 setIconViewUnchecked();
+                setTextViewUnchecked();
             }
         }
 
@@ -407,12 +456,20 @@ public class TMButton extends FrameLayout implements Checkable {
         }
     }
 
+    private void setTextViewChecked() {
+        textView.setTextColor(colorChecked);
+    }
+
     private void setIconViewUnchecked() {
         iconView.setColorFilter(colorUnchecked);
 
         if (isUncheckedDrawableAvailable()) {
             iconView.setImageDrawable(uncheckedDrawable);
         }
+    }
+
+    private void setTextViewUnchecked() {
+        textView.setTextColor(colorUnchecked);
     }
 
     /**

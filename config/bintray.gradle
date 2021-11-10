@@ -51,7 +51,7 @@ bintray {
     validateProp(user, "bintray.user")
 
     key = properties.getProperty("bintray.apikey")
-    validateProp(key, "bintray.key")
+    validateProp(key, "bintray.apikey")
 
     configurations = ['archives']
     pkg {

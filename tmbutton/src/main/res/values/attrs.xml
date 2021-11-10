@@ -5,6 +5,9 @@
         <attr name="unchecked_drawable" format="reference"/>
         <attr name="color_unchecked" format="color"/>
         <attr name="color_checked" format="color"/>
+        <attr name="button_text" format="reference"/>
+        <attr name="text_icon_space" format="dimension"/>
+        <attr name="text_style" format="reference"/>
     </declare-styleable>
 
 </resources>
