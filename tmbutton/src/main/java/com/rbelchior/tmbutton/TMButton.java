@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Checkable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -42,7 +44,7 @@ import androidx.appcompat.content.res.AppCompatResources;
  * <p><code>color_unchecked</code>: color of the unchecked state, this is the default value</p>
  * <p><code>color_checked</code>: color of the checked state</p>
  */
-public class TMButton extends RelativeLayout implements Checkable {
+public class TMButton extends LinearLayout implements Checkable {
 
     private static final DecelerateInterpolator INTERPOLATOR_DECELERATE = new DecelerateInterpolator(2.0f);
     private static final float SCALE_FACTOR = 2.5f;
@@ -88,6 +90,9 @@ public class TMButton extends RelativeLayout implements Checkable {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
+        setOrientation(LinearLayout.HORIZONTAL);
+        setLayoutParams(new LinearLayout.LayoutParams(context, attrs));
+        setGravity(Gravity.CENTER_VERTICAL);
         initViews(context, attrs, defStyleAttr);
         initAttrs(context, attrs);
 
@@ -106,48 +111,22 @@ public class TMButton extends RelativeLayout implements Checkable {
     }
 
     private void initViews(Context context, AttributeSet attrs, int defStyleAttr) {
-        TypedArray attributes =
-                context.obtainStyledAttributes(attrs, R.styleable.trinity_mirror_like_button);
 
         iconView = new ImageView(context, attrs, defStyleAttr);
         iconView.setId(R.id.button_icon);
+
         shadowIconView = new ImageView(context, attrs, defStyleAttr);
 
         textView = new TextView(context, attrs, defStyleAttr);
         textView.setId(R.id.button_text);
-        final String buttonText = attributes.getString(R.styleable.trinity_mirror_like_button_button_text);
-        textView.setText(buttonText);
-        textView.setTextAppearance(context, attributes.getResourceId(R.styleable.trinity_mirror_like_button_text_style, -1));
 
-        RelativeLayout.LayoutParams parentParam = new LayoutParams(context, attrs);
-        setLayoutParams(parentParam);
+        addView(textView);
 
-        RelativeLayout.LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        layoutParams.resolveLayoutDirection(layoutParams.getLayoutDirection());
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        addView(textView, layoutParams);
+        final FrameLayout iconLayout = new FrameLayout(context, attrs, defStyleAttr);
+        iconLayout.addView(iconView);
+        iconLayout.addView(shadowIconView);
+        addView(iconLayout);
 
-        if(TextUtils.isEmpty(buttonText)){
-            layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        }else{
-            layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        }
-
-        layoutParams.resolveLayoutDirection(layoutParams.getLayoutDirection());
-        layoutParams.addRule(RelativeLayout.RIGHT_OF, textView.getId());
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        layoutParams.setMarginStart(attributes.getDimensionPixelSize(R.styleable.trinity_mirror_like_button_text_icon_space, 0));
-        addView(iconView, layoutParams);
-
-        layoutParams.resolveLayoutDirection(layoutParams.getLayoutDirection());
-        layoutParams.addRule(RelativeLayout.ALIGN_START, iconView.getId());
-        layoutParams.addRule(RelativeLayout.ALIGN_END, iconView.getId());
-        layoutParams.addRule(RelativeLayout.ALIGN_TOP, iconView.getId());
-        layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, iconView.getId());
-        addView(shadowIconView, layoutParams);
-
-        attributes.recycle();
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
@@ -159,11 +138,21 @@ public class TMButton extends RelativeLayout implements Checkable {
                 context.obtainStyledAttributes(attrs, R.styleable.trinity_mirror_like_button);
 
         initColorDefault(attributes);
+        initTextViewAttrs(context, attributes);
         initColorChecked(attributes);
         initCheckedDrawable(attributes);
         initUncheckedDrawable(attributes);
 
         attributes.recycle();
+    }
+
+    private void initTextViewAttrs(Context context, TypedArray attributes) {
+
+        textView.setText(attributes.getString(R.styleable.trinity_mirror_like_button_button_text));
+        textView.setTextAppearance(context, attributes.getResourceId(R.styleable.trinity_mirror_like_button_text_style, -1));
+        final LinearLayout.LayoutParams params = (LayoutParams) textView.getLayoutParams();
+        params.setMarginEnd(attributes.getDimensionPixelSize(R.styleable.trinity_mirror_like_button_text_icon_space, 0));
+        textView.setLayoutParams(params);
     }
 
     private void initColorDefault(TypedArray attributes) {
