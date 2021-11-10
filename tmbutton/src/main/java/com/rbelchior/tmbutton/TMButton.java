@@ -9,20 +9,17 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Checkable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.AttrRes;
@@ -90,10 +87,6 @@ public class TMButton extends LinearLayout implements Checkable {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
-        setOrientation(LinearLayout.HORIZONTAL);
-        setLayoutParams(new LinearLayout.LayoutParams(context, attrs));
-        setClipChildren(false);
-        setGravity(Gravity.CENTER_VERTICAL);
         initViews(context, attrs, defStyleAttr);
         initAttrs(context, attrs);
 
@@ -103,8 +96,8 @@ public class TMButton extends LinearLayout implements Checkable {
 
         setIconViewUnchecked();
         setTextViewUnchecked();
-        shadowIconView.setVisibility(View.GONE);
 
+        shadowIconView.setVisibility(View.GONE);
         shadowAnimator = shadowIconView.animate();
         colorAnimator = ObjectAnimator
                 .ofObject(iconView, "colorFilter", new ArgbEvaluator(), 0, 0)
@@ -112,6 +105,10 @@ public class TMButton extends LinearLayout implements Checkable {
     }
 
     private void initViews(Context context, AttributeSet attrs, int defStyleAttr) {
+        setOrientation(LinearLayout.HORIZONTAL);
+        setLayoutParams(new LinearLayout.LayoutParams(context, attrs));
+        setClipChildren(false);
+        setGravity(Gravity.CENTER_VERTICAL);
 
         iconView = new ImageView(context, attrs, defStyleAttr);
         shadowIconView = new ImageView(context, attrs, defStyleAttr);
@@ -133,8 +130,7 @@ public class TMButton extends LinearLayout implements Checkable {
             return;
         }
 
-        TypedArray attributes =
-                context.obtainStyledAttributes(attrs, R.styleable.trinity_mirror_like_button);
+        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.TMButton);
 
         initColorDefault(attributes);
         initTextViewAttrs(context, attributes);
@@ -147,37 +143,37 @@ public class TMButton extends LinearLayout implements Checkable {
 
     private void initTextViewAttrs(Context context, TypedArray attributes) {
 
-        textView.setText(attributes.getString(R.styleable.trinity_mirror_like_button_button_text));
-        textView.setTextAppearance(context, attributes.getResourceId(R.styleable.trinity_mirror_like_button_text_style, -1));
+        textView.setText(attributes.getString(R.styleable.TMButton_text));
+        textView.setTextAppearance(context, attributes.getResourceId(R.styleable.TMButton_text_appearance, -1));
         final LinearLayout.LayoutParams params = (LayoutParams) textView.getLayoutParams();
-        params.setMarginEnd(attributes.getDimensionPixelSize(R.styleable.trinity_mirror_like_button_text_icon_space, 0));
+        params.setMarginEnd(attributes.getDimensionPixelSize(R.styleable.TMButton_drawable_padding, 0));
         textView.setLayoutParams(params);
     }
 
     private void initColorDefault(TypedArray attributes) {
         setColorUnchecked(
                 attributes.getColor(
-                        R.styleable.trinity_mirror_like_button_color_unchecked,
+                        R.styleable.TMButton_color_unchecked,
                         Color.LTGRAY));
     }
 
     private void initColorChecked(TypedArray attributes) {
         setColorChecked(
                 attributes.getColor(
-                        R.styleable.trinity_mirror_like_button_color_checked,
+                        R.styleable.TMButton_color_checked,
                         Color.MAGENTA));
     }
 
     private void initCheckedDrawable(TypedArray attributes) {
-        if (!attributes.hasValue(R.styleable.trinity_mirror_like_button_icon_drawable)) {
+        if (!attributes.hasValue(R.styleable.TMButton_icon_drawable)) {
             throw new IllegalArgumentException("Missing attribute: icon_drawable");
         }
         Drawable drawable;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            drawable = attributes.getDrawable(R.styleable.trinity_mirror_like_button_icon_drawable);
+            drawable = attributes.getDrawable(R.styleable.TMButton_icon_drawable);
         } else {
-            int iconResId = attributes.getResourceId(R.styleable.trinity_mirror_like_button_icon_drawable, 0);
+            int iconResId = attributes.getResourceId(R.styleable.TMButton_icon_drawable, 0);
             drawable = AppCompatResources.getDrawable(getContext(), iconResId);
         }
 
@@ -185,7 +181,7 @@ public class TMButton extends LinearLayout implements Checkable {
     }
 
     private void initUncheckedDrawable(TypedArray attributes) {
-        if (!attributes.hasValue(R.styleable.trinity_mirror_like_button_unchecked_drawable)) {
+        if (!attributes.hasValue(R.styleable.TMButton_unchecked_drawable)) {
             // this attr is optional
             return;
         }
@@ -193,9 +189,9 @@ public class TMButton extends LinearLayout implements Checkable {
         Drawable drawable;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            drawable = attributes.getDrawable(R.styleable.trinity_mirror_like_button_unchecked_drawable);
+            drawable = attributes.getDrawable(R.styleable.TMButton_unchecked_drawable);
         } else {
-            int iconResId = attributes.getResourceId(R.styleable.trinity_mirror_like_button_unchecked_drawable, 0);
+            int iconResId = attributes.getResourceId(R.styleable.TMButton_unchecked_drawable, 0);
             drawable = AppCompatResources.getDrawable(getContext(), iconResId);
         }
 
