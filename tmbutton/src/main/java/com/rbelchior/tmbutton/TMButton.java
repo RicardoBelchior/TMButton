@@ -9,17 +9,21 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Checkable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import androidx.annotation.AttrRes;
@@ -27,6 +31,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.widget.TextViewCompat;
 
 /**
  * <p>
@@ -51,17 +56,18 @@ public class TMButton extends LinearLayout implements Checkable {
 
     private ImageView iconView;
     private ImageView shadowIconView;
-    private TextView textView;
+    private TextSwitcher textSwitcher;
 
     private ViewPropertyAnimator shadowAnimator;
     private ObjectAnimator colorAnimator;
-    private ObjectAnimator textColorAnimator;
 
     private boolean isChecked;
     private boolean broadcasting;
 
     private int colorUnchecked;
     private int colorChecked;
+    private String textChecked;
+    private String textUnchecked;
 
     private Drawable checkedDrawable;
 
@@ -103,10 +109,6 @@ public class TMButton extends LinearLayout implements Checkable {
         colorAnimator = ObjectAnimator
                 .ofObject(iconView, "colorFilter", new ArgbEvaluator(), 0, 0)
                 .setDuration(DURATION_COLOR);
-
-        textColorAnimator = ObjectAnimator
-                .ofObject(textView, "textColor", new ArgbEvaluator(), 0, 0)
-                .setDuration(DURATION_COLOR);
     }
 
     private void initViews(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -118,16 +120,29 @@ public class TMButton extends LinearLayout implements Checkable {
         iconView = new ImageView(context, attrs, defStyleAttr);
         shadowIconView = new ImageView(context, attrs, defStyleAttr);
 
-        textView = new TextView(context, attrs, defStyleAttr);
-
-        addView(textView);
+        textSwitcher = new TextSwitcher(context, attrs);
+        textSwitcher.setFactory(() -> createTextView(context, attrs));
+        textSwitcher.setInAnimation(createTextSwitcherAnim(context, android.R.anim.fade_in));
+        textSwitcher.setOutAnimation(createTextSwitcherAnim(context, android.R.anim.fade_out));
+        addView(textSwitcher);
 
         final FrameLayout iconLayout = new FrameLayout(context, attrs, defStyleAttr);
         iconLayout.setClipChildren(false);
         iconLayout.addView(iconView);
         iconLayout.addView(shadowIconView);
         addView(iconLayout);
+    }
 
+    @NonNull
+    private TextView createTextView(Context context, AttributeSet attrs) {
+        return new TextView(context, attrs);
+    }
+
+    @NonNull
+    private Animation createTextSwitcherAnim(Context context, int fade_in) {
+        Animation fadeIn = AnimationUtils.loadAnimation(context, fade_in);
+        fadeIn.setDuration(DURATION_COLOR);
+        return fadeIn;
     }
 
     private void initAttrs(Context context, AttributeSet attrs) {
@@ -147,16 +162,29 @@ public class TMButton extends LinearLayout implements Checkable {
     }
 
     private void initTextViewAttrs(Context context, TypedArray attributes) {
-        String text = attributes.getString(R.styleable.TMButton_tmbutton_text);
-        if (text == null || text.isEmpty()) {
-            textView.setVisibility(View.GONE);
-        } else {
-            textView.setVisibility(View.VISIBLE);
-            textView.setText(text);
-            textView.setTextAppearance(context, attributes.getResourceId(R.styleable.TMButton_tmbutton_text_appearance, -1));
-            final LinearLayout.LayoutParams params = (LayoutParams) textView.getLayoutParams();
-            params.setMarginEnd(attributes.getDimensionPixelSize(R.styleable.TMButton_tmbutton_drawable_padding, 0));
-            textView.setLayoutParams(params);
+        textChecked = attributes.getString(R.styleable.TMButton_tmbutton_text_checked);
+        textUnchecked = attributes.getString(R.styleable.TMButton_tmbutton_text_unchecked);
+        int textAppearanceResId = attributes.getResourceId(R.styleable.TMButton_tmbutton_text_appearance, -1);
+        int drawablePadding = attributes.getDimensionPixelSize(R.styleable.TMButton_tmbutton_drawable_padding, 0);
+
+        if (TextUtils.isEmpty(textUnchecked) && TextUtils.isEmpty(textChecked)) {
+            textSwitcher.setVisibility(View.GONE);
+            return;
+        }
+        if (!TextUtils.isEmpty(textUnchecked) && TextUtils.isEmpty(textChecked)) {
+            textChecked = textUnchecked;
+        } else if (TextUtils.isEmpty(textUnchecked) && !TextUtils.isEmpty(textChecked)) {
+            textUnchecked = textChecked;
+        }
+
+        textSwitcher.setCurrentText(textChecked);
+        textSwitcher.setText(textUnchecked);
+
+        for (int i = 0; i < textSwitcher.getChildCount(); i++) {
+            TextView textView = (TextView) textSwitcher.getChildAt(i);
+            TextViewCompat.setTextAppearance(textView, textAppearanceResId);
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) textView.getLayoutParams();
+            params.setMarginEnd(drawablePadding);
         }
     }
 
@@ -244,11 +272,8 @@ public class TMButton extends LinearLayout implements Checkable {
         colorAnimator.setObjectValues(colorUnchecked, colorChecked);
         colorAnimator.start();
 
-        textColorAnimator.cancel();
-        textColorAnimator.removeAllListeners();
-        textColorAnimator.addListener(textColorAnimatorCheckListener);
-        textColorAnimator.setObjectValues(colorUnchecked, colorChecked);
-        textColorAnimator.start();
+        ((TextView) textSwitcher.getNextView()).setTextColor(colorChecked);
+        textSwitcher.setText(textChecked);
     }
 
     private void animateUnCheck() {
@@ -263,11 +288,7 @@ public class TMButton extends LinearLayout implements Checkable {
         colorAnimator.setObjectValues(colorChecked, colorUnchecked);
         colorAnimator.start();
 
-        textColorAnimator.cancel();
-        textColorAnimator.removeAllListeners();
-        textColorAnimator.addListener(textColorAnimatorUncheckListener);
-        textColorAnimator.setObjectValues(colorChecked, colorUnchecked);
-        textColorAnimator.start();
+        textSwitcher.setText(textUnchecked);
     }
 
 
@@ -317,30 +338,6 @@ public class TMButton extends LinearLayout implements Checkable {
         }
     };
 
-    private final Animator.AnimatorListener textColorAnimatorCheckListener = new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationCancel(Animator animation) {
-            setTextViewChecked();
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            setTextViewChecked();
-        }
-    };
-
-    private final Animator.AnimatorListener textColorAnimatorUncheckListener = new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationCancel(Animator animation) {
-            setTextViewUnchecked();
-        }
-
-        @Override
-        public void onAnimationEnd(Animator animation) {
-            setTextViewUnchecked();
-        }
-    };
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean result = super.onTouchEvent(event);
@@ -355,12 +352,6 @@ public class TMButton extends LinearLayout implements Checkable {
                 break;
 
             case MotionEvent.ACTION_UP:
-                iconView.animate()
-                        .scaleX(1)
-                        .scaleY(1)
-                        .setInterpolator(INTERPOLATOR_DECELERATE);
-                break;
-
             case MotionEvent.ACTION_CANCEL:
                 iconView.animate()
                         .scaleX(1)
@@ -454,7 +445,6 @@ public class TMButton extends LinearLayout implements Checkable {
             }
         } else {
             colorAnimator.cancel();
-            textColorAnimator.cancel();
             if (isChecked) {
                 setIconViewChecked();
                 setTextViewChecked();
@@ -485,7 +475,7 @@ public class TMButton extends LinearLayout implements Checkable {
     }
 
     private void setTextViewChecked() {
-        textView.setTextColor(colorChecked);
+        textSwitcher.setCurrentText(textChecked);
     }
 
     private void setIconViewUnchecked() {
@@ -497,7 +487,7 @@ public class TMButton extends LinearLayout implements Checkable {
     }
 
     private void setTextViewUnchecked() {
-        textView.setTextColor(colorUnchecked);
+        textSwitcher.setCurrentText(textUnchecked);
     }
 
     /**

@@ -3,4 +3,7 @@
     <string name="button1">TMButton1</string>
     <string name="button2">TMButton2</string>
     <string name="button3">TMButton3</string>
+    <string name="saved">saved</string>
+    <string name="save">save</string>
+    <string name="unsaved">unsaved</string>
 </resources>

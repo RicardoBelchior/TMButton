@@ -36,13 +36,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_1"
-        app:tmbutton_text="@string/button2"
-        app:tmbutton_text_appearance="@style/TextAppearance.AppCompat.Large" />
+        app:tmbutton_text_appearance="@style/TextAppearance.AppCompat.Large"
+        app:tmbutton_text_checked="@string/saved"
+        app:tmbutton_text_unchecked="@string/save" />
 
     <com.rbelchior.tmbutton.TMButton
         android:id="@+id/button_3"
         android:layout_width="0dp"
         android:layout_height="64dp"
+        android:layout_marginStart="16dp"
         app:color_checked="#009900"
         app:color_unchecked="#aaa"
         app:icon_drawable="@drawable/ic_android_black_24dp"
@@ -50,7 +52,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_2"
         app:tmbutton_drawable_padding="24dp"
-        app:tmbutton_text="@string/button3" />
+        app:tmbutton_text_checked="@string/saved"
+        app:tmbutton_text_unchecked="@string/unsaved" />
 
     <ListView
         android:id="@+id/list_view"

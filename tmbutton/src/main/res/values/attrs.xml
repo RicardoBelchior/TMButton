@@ -1,13 +1,23 @@
 <resources>
 
     <declare-styleable name="TMButton">
-        <attr name="icon_drawable" format="reference"/>
-        <attr name="unchecked_drawable" format="reference"/>
-        <attr name="color_unchecked" format="color"/>
-        <attr name="color_checked" format="color"/>
-        <attr name="tmbutton_text" format="reference"/>
-        <attr name="tmbutton_drawable_padding" format="dimension"/>
-        <attr name="tmbutton_text_appearance" format="reference"/>
+
+        <!-- Main icon drawable resource  -->
+        <attr name="icon_drawable" format="reference" />
+        <!-- Optional drawable to use when unchecked -->
+        <attr name="unchecked_drawable" format="reference" />
+        <!-- Color used when status is unchecked  -->
+        <attr name="color_unchecked" format="color" />
+        <!-- Color used when status is checked  -->
+        <attr name="color_checked" format="color" />
+        <!-- Optional text to be displayed before the icon, when status is checked -->
+        <attr name="tmbutton_text_checked" format="reference" />
+        <!-- Optional text to be displayed before the icon, when status is unchecked -->
+        <attr name="tmbutton_text_unchecked" format="reference" />
+        <!-- Padding between the text and the icon -->
+        <attr name="tmbutton_drawable_padding" format="dimension" />
+        <!-- Text appearance of the text view, when checked/unchecked text are used -->
+        <attr name="tmbutton_text_appearance" format="reference" />
     </declare-styleable>
 
 </resources>
